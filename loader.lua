@@ -1,16 +1,36 @@
-local BASE_URL =
-    "https://raw.githubusercontent.com/ksgod55/ksgod/main/"
+print("[KSGOD] Loader started")
 
-local function LoadFile(file)
-    local source = game:HttpGet(BASE_URL .. file)
-    local func = loadstring(source)
+local URL = "https://raw.githubusercontent.com/ksgod55/ksgod/main/main.lua"
 
-    if not func then
-        error("โหลด " .. file .. " ไม่สำเร็จ")
-    end
+local success, result = pcall(function()
+    return game:HttpGet(URL)
+end)
 
-    return func()
+if not success then
+    warn("[KSGOD] HttpGet ERROR:")
+    warn(result)
+    return
 end
 
-LoadFile("config.lua")
-LoadFile("main.lua")
+print("[KSGOD] Download success")
+print("[KSGOD] Source length:", #result)
+
+local func, err = loadstring(result)
+
+if not func then
+    warn("[KSGOD] loadstring ERROR:")
+    warn(err)
+    return
+end
+
+print("[KSGOD] Executing main.lua")
+
+local ok, executeError = pcall(func)
+
+if not ok then
+    warn("[KSGOD] main.lua ERROR:")
+    warn(executeError)
+    return
+end
+
+print("[KSGOD] Finished successfully")
